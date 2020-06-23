@@ -1,16 +1,11 @@
-package com.jambod.user.repository
+package com.maryam.sample.repository
 
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
-import com.jambod.user.util.*
-import com.jambod.user.util.ErrorHandling.Companion.ERROR_UNKNOWN
-import com.jambod.user.util.ErrorHandling.Companion.NETWORK_ERROR
-import com.jambod.user.util.ErrorHandling.Companion.UNABLE_TODO_OPERATION_WO_INTERNET
-import com.maryam.sample.repository.DataState
-import com.maryam.sample.repository.buildError
-import com.maryam.sample.repository.safeApiCall
-import com.maryam.sample.repository.safeCacheCall
+import com.maryam.sample.util.*
+import com.maryam.sample.util.ErrorHandling.Companion.ERROR_UNKNOWN
+import com.maryam.sample.util.ErrorHandling.Companion.UNABLE_TODO_OPERATION_WO_INTERNET
 import kotlin.coroutines.CoroutineContext
 
 
