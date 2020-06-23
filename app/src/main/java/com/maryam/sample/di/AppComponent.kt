@@ -1,6 +1,10 @@
 package com.maryam.sample.di
 
 import android.app.Application
+import com.maryam.sample.base.BaseActivity
+import com.maryam.sample.ui.MainActivity
+import com.maryam.sample.ui.postDetail.DetailPostFragment
+import com.maryam.sample.ui.postList.ListPostFragment
 
 import dagger.BindsInstance
 import dagger.Component
@@ -24,7 +28,10 @@ interface AppComponent {
         fun build(): AppComponent
     }
 
-
+    fun inject(activity:BaseActivity)
+    fun inject(activity:MainActivity)
+    fun inject(fragment: ListPostFragment)
+    fun inject(fragment: DetailPostFragment)
 }
 
 

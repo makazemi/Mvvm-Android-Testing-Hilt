@@ -19,6 +19,7 @@ class BaseApplication: Application(){
         super.onCreate()
         initAppComponent()
 
+
     }
 
 }
