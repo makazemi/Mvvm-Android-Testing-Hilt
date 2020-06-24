@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.post_item_rcy.txt_title
 
 class DetailPostFragment : BaseFragment() {
 
-    val args: DetailPostFragmentArgs by navArgs()
+    private val args: DetailPostFragmentArgs by navArgs()
 
     override fun displayProgressBar(inProgress: Boolean) {}
 
@@ -29,6 +29,7 @@ class DetailPostFragment : BaseFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
         val post=args.postArg
         initView(post)
     }

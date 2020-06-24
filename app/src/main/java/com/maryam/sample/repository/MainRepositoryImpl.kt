@@ -5,6 +5,7 @@ import androidx.lifecycle.liveData
 import com.maryam.sample.api.ApiService
 import com.maryam.sample.db.PostDao
 import com.maryam.sample.model.Post
+import com.maryam.sample.model.PostResponse
 import com.maryam.sample.util.ApiResponseHandler
 import com.maryam.sample.util.CacheResponseHandler
 import com.maryam.sample.util.SessionManager
@@ -26,11 +27,11 @@ class MainRepositoryImpl @Inject constructor(private val apiService: ApiService,
             }
 
             emit(
-                object : ApiResponseHandler<List<Post>, List<Post>>(
+                object : ApiResponseHandler<List<Post>,PostResponse>(
                     response = apiResult
                 ) {
-                    override suspend fun handleSuccess(resultObj: List<Post>): DataState<List<Post>> {
-                        return DataState.data(resultObj)
+                    override suspend fun handleSuccess(resultObj: PostResponse): DataState<List<Post>> {
+                        return DataState.data(resultObj.posts)
                     }
 
 
@@ -57,16 +58,16 @@ class MainRepositoryImpl @Inject constructor(private val apiService: ApiService,
     }
 
     override fun getPostsNetworkBoundResource(coroutineContext: CoroutineContext): LiveData<DataState<List<Post>>> {
-       return object:NetworkBoundResource<List<Post>,List<Post>,List<Post>>(
+       return object:NetworkBoundResource<PostResponse,List<Post>,List<Post>>(
            coroutineContext,
            apiCall = {apiService.getPosts()},
            cacheCall = {postDao.fetchListPost()},
            isNetworkAvailable = sessionManager.isConnectedToTheInternet()
        ){
-           override suspend fun updateCache(networkObject: List<Post>) {
-               if (networkObject.isNotEmpty()) {
+           override suspend fun updateCache(networkObject: PostResponse) {
+               if (networkObject.posts.isNotEmpty()) {
                    withContext(Dispatchers.IO) {
-                       for (item in networkObject) {
+                       for (item in networkObject.posts) {
                            try {
                                launch {
                                    postDao.insert(item)
