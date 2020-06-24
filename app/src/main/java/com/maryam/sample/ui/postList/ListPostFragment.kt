@@ -8,14 +8,17 @@ import android.view.ViewGroup
 import com.maryam.sample.R
 import com.maryam.sample.base.BaseApplication
 import com.maryam.sample.base.BaseFragment
-
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.android.synthetic.main.fragment_list_post.*
 
 class ListPostFragment :BaseFragment() {
 
-    override fun displayProgressBar(inProgress: Boolean) {
+    private val viewModel:PostListViewModel by viewModels{
+        viewModelFactory
     }
-
-
+    private lateinit var postAdapter:PostAdapter
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -23,6 +26,38 @@ class ListPostFragment :BaseFragment() {
         return inflater.inflate(R.layout.fragment_list_post, container, false)
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        initRcy()
+        subscribeObserverPost()
+    }
+
+    private fun initRcy(){
+        postAdapter= PostAdapter()
+        rcy_post.apply {
+            layoutManager=LinearLayoutManager(this@ListPostFragment.context)
+            adapter=postAdapter
+        }
+    }
+    private fun subscribeObserverPost(){
+        viewModel.listPost.observe(viewLifecycleOwner, Observer {
+            it?.data?.getContentIfNotHandled()?.let {
+                postAdapter.submitList(it)
+            }
+            onDataStateChange(it.loading,it.error)
+        })
+    }
+    override fun displayProgressBar(inProgress: Boolean) {
+        if(inProgress)
+            progressBar.visibility=View.VISIBLE
+        else
+            progressBar.visibility=View.GONE
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        rcy_post.adapter=null
+    }
     override fun onAttach(context: Context) {
         super.onAttach(context)
         (activity?.application as BaseApplication).appComponent.inject(this)
