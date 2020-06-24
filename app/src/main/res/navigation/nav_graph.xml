@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/listPostFragment">
+
+    <fragment
+        android:id="@+id/listPostFragment"
+        android:name="com.maryam.sample.ui.postList.ListPostFragment"
+        android:label="fragment_list_post"
+        tools:layout="@layout/fragment_list_post" >
+        <action
+            android:id="@+id/action_listPostFragment_to_detailPostFragment"
+            app:destination="@id/detailPostFragment" >
+            <argument
+                android:name="postArg"
+                app:argType="com.maryam.sample.model.Post" />
+        </action>
+    </fragment>
+    <fragment
+        android:id="@+id/detailPostFragment"
+        android:name="com.maryam.sample.ui.postDetail.DetailPostFragment"
+        android:label="fragment_detail_post"
+        tools:layout="@layout/fragment_detail_post" >
+        <argument
+            android:name="postArg"
+            app:argType="com.maryam.sample.model.Post" />
+    </fragment>
+</navigation>

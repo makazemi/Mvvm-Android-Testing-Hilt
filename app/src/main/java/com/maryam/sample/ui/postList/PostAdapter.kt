@@ -10,13 +10,22 @@ import com.maryam.sample.R
 import com.maryam.sample.model.Post
 import kotlinx.android.synthetic.main.post_item_rcy.view.*
 
-class PostAdapter() : ListAdapter<Post, PostAdapter.ViewHolder>(DiffCallback()) {
+class PostAdapter : ListAdapter<Post, PostAdapter.ViewHolder>(DiffCallback()) {
 
+    private lateinit var clickListener: (item:Post) -> Unit
+
+
+    fun setClickListenerRoot(clickListener: (item:Post) -> Unit) {
+        this.clickListener = clickListener
+    }
     inner class ViewHolder constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         fun bind(item:Post) {
             itemView.txt_id.text=item.id.toString()
             itemView.txt_title.text=item.title
+            itemView.setOnClickListener{
+                clickListener(item)
+            }
         }
     }
 

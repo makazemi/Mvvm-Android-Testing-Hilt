@@ -10,7 +10,9 @@ import com.maryam.sample.base.BaseApplication
 import com.maryam.sample.base.BaseFragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.maryam.sample.model.Post
 import kotlinx.android.synthetic.main.fragment_list_post.*
 
 class ListPostFragment :BaseFragment() {
@@ -34,10 +36,12 @@ class ListPostFragment :BaseFragment() {
 
     private fun initRcy(){
         postAdapter= PostAdapter()
+        postAdapter.setClickListenerRoot { itemClick(it) }
         rcy_post.apply {
             layoutManager=LinearLayoutManager(this@ListPostFragment.context)
             adapter=postAdapter
         }
+
     }
     private fun subscribeObserverPost(){
         viewModel.listPost.observe(viewLifecycleOwner, Observer {
@@ -46,6 +50,15 @@ class ListPostFragment :BaseFragment() {
             }
             onDataStateChange(it.loading,it.error)
         })
+    }
+    private fun itemClick(item:Post){
+        navigateToDetail(item)
+    }
+    private fun navigateToDetail(item:Post){
+        val action =
+        ListPostFragmentDirections.actionListPostFragmentToDetailPostFragment(item)
+        if(findNavController().currentDestination?.id==R.id.listPostFragment)
+            this.findNavController().navigate(action)
     }
     override fun displayProgressBar(inProgress: Boolean) {
         if(inProgress)
