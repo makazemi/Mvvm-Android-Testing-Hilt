@@ -1,6 +1,5 @@
 package com.maryam.sample.util
 
-import android.util.Log
 import com.maryam.sample.util.ErrorHandling.Companion.ERROR_SERVER_CONNECTION
 import retrofit2.Response
 
@@ -13,10 +12,8 @@ sealed class GenericApiResponse<T> {
 
     companion object {
 
-        const val TAG="NetworkBoundResource"
 
         fun <T> create(error: Throwable): ApiErrorResponse<T> {
-            Log.d(TAG,"GenericApiResponse create=${error.message}")
             return ApiErrorResponse(
                 ErrorBody( message = error.message ?: "unknown error")
             )
@@ -37,7 +34,6 @@ sealed class GenericApiResponse<T> {
 
                 val msg = response.errorBody()?.string()
                 val userMessage= ErrorBody.convertToObject(msg).userMessage
-                Log.d(TAG,"else response error=$msg")
                 val errorMsg = if (userMessage.isEmpty()) {
                     ERROR_SERVER_CONNECTION
                 } else {
