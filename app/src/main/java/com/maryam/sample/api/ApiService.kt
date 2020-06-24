@@ -8,6 +8,6 @@ import javax.inject.Singleton
 interface ApiService {
 
     @GET("posts")
-    suspend fun getNotification(
+    suspend fun getPosts(
     ): GenericApiResponse<List<Post>>
 }
