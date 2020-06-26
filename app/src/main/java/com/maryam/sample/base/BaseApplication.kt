@@ -5,14 +5,14 @@ import com.maryam.sample.di.AppComponent
 import com.maryam.sample.di.DaggerAppComponent
 
 
-class BaseApplication: Application(){
+open class BaseApplication: Application(){
 
+    val appComponent: AppComponent by lazy {
+        initAppComponent()
+    }
 
-    lateinit var appComponent: AppComponent
-
-
-    private fun initAppComponent(){
-        appComponent= DaggerAppComponent.builder().application(this).build()
+    open fun initAppComponent():AppComponent{
+        return DaggerAppComponent.builder().application(this).build()
     }
 
     override fun onCreate() {

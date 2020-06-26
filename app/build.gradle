@@ -15,7 +15,7 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "com.maryam.sample.MockTestRunner"
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -93,6 +93,8 @@ dependencies {
     /*Dagger 2*/
     implementation 'com.google.dagger:dagger:2.27'
     kapt 'com.google.dagger:dagger-compiler:2.27'
+    //for test
+    kaptAndroidTest 'com.google.dagger:dagger-compiler:2.27'
 
 
 
@@ -104,7 +106,6 @@ dependencies {
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion"
 
     // Dependencies for Android instrumented unit tests
-    androidTestImplementation "junit:junit:$junitVersion"
     androidTestImplementation "org.mockito:mockito-core:$mockitoVersion"
     androidTestImplementation "com.linkedin.dexmaker:dexmaker-mockito:$dexMakerVersion"
     androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion"
@@ -119,22 +120,24 @@ dependencies {
     testImplementation "androidx.test.ext:junit:$androidXTestExtKotlinRunnerVersion"
 
     // AndroidX Test - Instrumented testing
-    androidTestImplementation "androidx.test.ext:junit:$androidXTestExtKotlinRunnerVersion"
-    androidTestImplementation "androidx.test.espresso:espresso-core:$espressoVersion"
     androidTestImplementation "androidx.test.espresso:espresso-contrib:$espressoVersion"
     androidTestImplementation "androidx.arch.core:core-testing:$archTestingVersion"
 
 
     testImplementation "com.squareup.okhttp3:mockwebserver:$mockwebserver"
 
-    // Espresso
-    def androidx_espresso_core = "3.2.0"
-    androidTestImplementation "androidx.test.espresso:espresso-core:$androidx_espresso_core"
-    androidTestImplementation "androidx.test.espresso:espresso-contrib:$androidx_espresso_core"
-
+    /*Espresso*/
     def androidx_espresso_idling_resource = "3.2.0"
     androidTestImplementation "androidx.test.espresso:espresso-idling-resource:$androidx_espresso_idling_resource"
     implementation "androidx.test.espresso:espresso-idling-resource:$androidx_espresso_idling_resource"
+
+
+    // Kotlin test
+    androidTestImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
+
+
+    // Navigation testing artifact
+  //  androidTestImplementation 'androidx.navigation:navigation-testing:2.2.2'
 
 
 }
