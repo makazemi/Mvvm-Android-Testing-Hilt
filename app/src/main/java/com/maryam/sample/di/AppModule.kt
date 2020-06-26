@@ -62,8 +62,8 @@ object AppModule{
     @JvmStatic
     @Singleton
     @Provides
-    fun provideMainRepository(apiService: ApiService,sessionManager: SessionManager,postDao: PostDao): MainRepository {
-        return MainRepositoryImpl(apiService,sessionManager,postDao)
+    fun provideMainRepository(apiService: ApiService,postDao: PostDao): MainRepository {
+        return MainRepositoryImpl(apiService,postDao)
     }
 
 

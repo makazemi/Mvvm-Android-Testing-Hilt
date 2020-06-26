@@ -9,5 +9,8 @@ object Constant {
     const val SECRET_KEY="\$2b\$10\$yU34EMF5xhRZfWRCSywtmOtSWMaU7R3YvPa8QcEYzW/oF9N2ve3q2"
 
 
+    const val TAG = "AppDebug" // Tag for logs
+    const val DEBUG = true // enable logging
+
 
 }

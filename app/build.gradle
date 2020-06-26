@@ -5,13 +5,13 @@ apply plugin: 'kotlin-kapt'
 
 apply plugin: 'androidx.navigation.safeargs'
 android {
-    compileSdkVersion 29
+    compileSdkVersion 28
     buildToolsVersion "29.0.3"
 
     defaultConfig {
         applicationId "com.maryam.sample"
         minSdkVersion 17
-        targetSdkVersion 29
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
 
@@ -98,7 +98,7 @@ dependencies {
 
     // Dependencies for local unit tests
     testImplementation "junit:junit:$junitVersion"
-    testImplementation "org.hamcrest:hamcrest-all:$hamcrestVersion"
+    testImplementation "org.hamcrest:hamcrest:$hamcrestVersion"
     testImplementation "androidx.arch.core:core-testing:$archTestingVersion"
     testImplementation "org.robolectric:robolectric:$robolectricVersion"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion"
@@ -126,4 +126,15 @@ dependencies {
 
 
     testImplementation "com.squareup.okhttp3:mockwebserver:$mockwebserver"
+
+    // Espresso
+    def androidx_espresso_core = "3.2.0"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$androidx_espresso_core"
+    androidTestImplementation "androidx.test.espresso:espresso-contrib:$androidx_espresso_core"
+
+    def androidx_espresso_idling_resource = "3.2.0"
+    androidTestImplementation "androidx.test.espresso:espresso-idling-resource:$androidx_espresso_idling_resource"
+    implementation "androidx.test.espresso:espresso-idling-resource:$androidx_espresso_idling_resource"
+
+
 }
