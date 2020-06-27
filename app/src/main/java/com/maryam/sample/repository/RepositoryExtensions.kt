@@ -33,7 +33,6 @@ suspend fun <T> safeApiCall(
     return withContext(coroutineContext) {
         try {
             withTimeout(NETWORK_TIMEOUT) {
-                Log.d(TAG, "Try")
                 apiCall.invoke()
             }
         } catch (throwable: Throwable) {
@@ -41,22 +40,18 @@ suspend fun <T> safeApiCall(
             when (throwable) {
                 is TimeoutCancellationException -> {
                     val code = "408" // timeout error code
-                    Log.d(TAG, "TimeoutCancellationException=${throwable.message}")
                     ApiErrorResponse<T>(ErrorBody(code, ERROR_CHECK_NETWORK_CONNECTION))
                 }
                 is IOException -> {
-                    Log.d(TAG, "IOException")
                     ApiErrorResponse<T>(ErrorBody(message = NETWORK_ERROR))
                 }
                 is HttpException -> {
                     val code = throwable.code().toString()
                     val errorResponse =
                         ErrorBody.convertToObject(convertErrorBody(throwable)).userMessage
-                    Log.d(TAG, "HttpException=${throwable.message()}")
                     ApiErrorResponse<T>(ErrorBody(code, errorResponse))
                 }
                 else -> {
-                    Log.d(TAG, "else")
                     ApiErrorResponse<T>(ErrorBody(message = ERROR_UNKNOWN))
 
                 }
