@@ -18,11 +18,11 @@ import kotlin.coroutines.CoroutineContext
 
 @Singleton
 class MainRepositoryImpl @Inject constructor(private val apiService: ApiService
-,private val postDao: PostDao):MainRepository {
+,private val postDao: PostDao,private val sessionManager: SessionManager):MainRepository {
     override fun getPostsApiOnly(coroutineContext: CoroutineContext): LiveData<DataState<List<Post>>> =
         liveData {
             emit(DataState.loading(true))
-            val apiResult = safeApiCall(true,coroutineContext) {
+            val apiResult = safeApiCall(sessionManager.isConnectedToTheInternet(),coroutineContext) {
                apiService.getPosts()
             }
 
@@ -62,7 +62,7 @@ class MainRepositoryImpl @Inject constructor(private val apiService: ApiService
            coroutineContext,
            apiCall = {apiService.getPosts()},
            cacheCall = {postDao.fetchListPost()},
-           isNetworkAvailable = true
+           isNetworkAvailable = sessionManager.isConnectedToTheInternet()
        ){
            override suspend fun updateCache(networkObject: PostResponse) {
                if (networkObject.posts.isNotEmpty()) {
