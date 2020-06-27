@@ -7,5 +7,7 @@ import javax.inject.Inject
 
 class PostListViewModel @Inject constructor(repository: MainRepository):ViewModel() {
 
+
+
     val listPost=repository.getPostsApiOnly(viewModelScope.coroutineContext)
 }
