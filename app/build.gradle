@@ -139,6 +139,12 @@ dependencies {
 
     testImplementation "com.squareup.okhttp3:mockwebserver:$mockwebserver"
 
+    // Dependencies for local unit tests
+    testImplementation "org.hamcrest:hamcrest:$hamcrestVersion"
+    testImplementation "androidx.arch.core:core-testing:$archTestingVersion"
+    testImplementation "org.robolectric:robolectric:$robolectricVersion"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion"
+
     // Navigation testing artifact
   //  androidTestImplementation 'androidx.navigation:navigation-testing:2.2.2'
 

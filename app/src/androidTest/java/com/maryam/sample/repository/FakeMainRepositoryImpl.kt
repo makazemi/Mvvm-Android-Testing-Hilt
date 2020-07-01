@@ -7,7 +7,9 @@ import com.maryam.sample.db.PostDao
 import com.maryam.sample.model.Post
 import com.maryam.sample.model.PostResponse
 import com.maryam.sample.util.CacheResponseHandler
+import com.maryam.sample.util.EspressoIdlingResource
 import com.maryam.sample.util.wrapEspressoIdlingResource
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -41,6 +43,7 @@ constructor() : MainRepository {
     override fun getPostsApiOnly(coroutineContext: CoroutineContext): LiveData<DataState<List<Post>>> =
         wrapEspressoIdlingResource{
             liveData {
+                EspressoIdlingResource.increment()
                 val apiResult = safeCacheCall(coroutineContext) {
                     postDao.fetchListPost()
                 }
@@ -55,12 +58,14 @@ constructor() : MainRepository {
                 )
 
             }
-        }
+
+
+       }
 
 
     @Throws(UninitializedPropertyAccessException::class)
     override fun getPostsCashOnly(coroutineContext: CoroutineContext): LiveData<DataState<List<Post>>> =
-        wrapEspressoIdlingResource {
+      //  wrapEspressoIdlingResource {
             liveData {
                 val apiResult = safeCacheCall(coroutineContext) {
                     postDao.fetchListPost()
@@ -77,12 +82,12 @@ constructor() : MainRepository {
                 )
 
             }
-        }
+     //   }
 
 
     @Throws(UninitializedPropertyAccessException::class)
     override fun getPostsNetworkBoundResource(coroutineContext: CoroutineContext): LiveData<DataState<List<Post>>> {
-        wrapEspressoIdlingResource {
+       // wrapEspressoIdlingResource {
             return object : NetworkBoundResource<PostResponse, List<Post>, List<Post>>(
                 coroutineContext,
                 apiCall = { apiService.getPosts() },
@@ -111,7 +116,7 @@ constructor() : MainRepository {
                 override fun shouldFetch(cacheObject: List<Post>?): Boolean = true
 
             }.result
-        }
+       // }
 
     }
 

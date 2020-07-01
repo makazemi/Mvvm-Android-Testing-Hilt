@@ -18,6 +18,7 @@ import org.junit.runner.RunWith
 import androidx.test.espresso.assertion.ViewAssertions.*
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.maryam.sample.model.Post
 import com.maryam.sample.ui.postDetail.DetailPostFragment
 import com.maryam.sample.util.EspressoIdlingResourceRule
@@ -25,7 +26,7 @@ import org.junit.Rule
 
 @ExperimentalCoroutinesApi
 @InternalCoroutinesApi
-@RunWith(AndroidJUnit4ClassRunner::class)
+@RunWith(AndroidJUnit4::class)
 class ListPostFragmentTest : BaseMainActivityTests(){
 
     @get: Rule
@@ -41,6 +42,26 @@ class ListPostFragmentTest : BaseMainActivityTests(){
     }
 
     @Test
+    fun loadPost_success(){
+        val apiService = configureFakeApiService(
+            blogsDataSource = Constants.BLOG_POSTS_DATA_FILENAME, // full list of data
+            networkDelay = 0L,
+            application = app
+        )
+        configureFakeRepository(apiService,app)
+        injectTest(app)
+
+        val scenario = launchFragmentInContainer<ListPostFragment>()
+
+        onView(withId(R.id.rcy_post)).check(matches(isDisplayed()))
+    }
+
+    override fun injectTest(application: TestBaseApplication) {
+        (application.appComponent as TestAppComponent)
+            .inject(this)
+    }
+
+    @Test
     fun detailPostFragment_showItem(){
         val bundle=Bundle().apply {
             putParcelable("postArg",Post(1,1,"title","body"))
@@ -53,27 +74,5 @@ class ListPostFragmentTest : BaseMainActivityTests(){
         onView(withId(R.id.txt_title)).check(matches(withText("title")))
         onView(withId(R.id.txt_body)).check(matches(withText("body")))
     }
-    @Test
-    fun loadPost_success(){
-        val apiService = configureFakeApiService(
-            blogsDataSource = Constants.BLOG_POSTS_DATA_FILENAME, // full list of data
-            networkDelay = 0L,
-            application = app
-        )
-        configureFakeRepository(apiService,app)
-        injectTest(app)
 
-      val scenario = launchFragmentInContainer<ListPostFragment>()
-
-
-      //  onView(withId(R.id.rcy_post)).perform(RecyclerViewActions.scrollToPosition<PostAdapter.ViewHolder>(2))
-      //  onView(withText("qui est esse")).check(matches(isDisplayed()))
-        onView(withId(R.id.rcy_post)).check(matches(isDisplayed()))
-    }
-
-
-    override fun injectTest(application: TestBaseApplication) {
-        (application.appComponent as TestAppComponent)
-            .inject(this)
-    }
 }
