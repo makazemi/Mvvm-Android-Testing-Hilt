@@ -17,6 +17,9 @@ android {
 
         testInstrumentationRunner "com.maryam.sample.MockTestRunner"
 
+        // clear state after each individual test
+        testInstrumentationRunnerArguments clearPackageData: 'true'
+
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments = [
@@ -59,15 +62,15 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+   // androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
 
 
     def room_version = '2.2.5'
     def retrofit_version = '2.9.0'
 
     /*Kotlin*/
-    implementation "androidx.navigation:navigation-fragment-ktx:2.2.2"
-    implementation "androidx.navigation:navigation-ui-ktx:2.2.2"
+    implementation "androidx.navigation:navigation-fragment-ktx:2.3.0"
+    implementation "androidx.navigation:navigation-ui-ktx:2.3.0"
 
 
     /*Kotlin Android Coroutines*/
@@ -83,8 +86,8 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
     kapt "androidx.lifecycle:lifecycle-common-java8:2.2.0"
 
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.0-alpha04'
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.0-alpha04'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.0-alpha05'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.0-alpha05'
     /* room */
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
@@ -96,45 +99,45 @@ dependencies {
     //for test
     kaptAndroidTest 'com.google.dagger:dagger-compiler:2.27'
 
-
-
-    // Dependencies for local unit tests
-    testImplementation "junit:junit:$junitVersion"
-    testImplementation "org.hamcrest:hamcrest:$hamcrestVersion"
-    testImplementation "androidx.arch.core:core-testing:$archTestingVersion"
-    testImplementation "org.robolectric:robolectric:$robolectricVersion"
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion"
-
-    // Dependencies for Android instrumented unit tests
-    androidTestImplementation "org.mockito:mockito-core:$mockitoVersion"
-    androidTestImplementation "com.linkedin.dexmaker:dexmaker-mockito:$dexMakerVersion"
-    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion"
-
-    // Testing code should not be included in the main code.
-    // Once https://issuetracker.google.com/128612536 is fixed this can be fixed.
-    debugImplementation "androidx.fragment:fragment-testing:$fragmentVersion"
-    implementation "androidx.test:core:$androidXTestCoreVersion"
-
-    // AndroidX Test - JVM testing
-    testImplementation "androidx.test:core-ktx:$androidXTestCoreVersion"
-    testImplementation "androidx.test.ext:junit:$androidXTestExtKotlinRunnerVersion"
-
-    // AndroidX Test - Instrumented testing
-    androidTestImplementation "androidx.test.espresso:espresso-contrib:$espressoVersion"
-    androidTestImplementation "androidx.arch.core:core-testing:$archTestingVersion"
-
-
-    testImplementation "com.squareup.okhttp3:mockwebserver:$mockwebserver"
-
-    /*Espresso*/
-    def androidx_espresso_idling_resource = "3.2.0"
-    androidTestImplementation "androidx.test.espresso:espresso-idling-resource:$androidx_espresso_idling_resource"
-    implementation "androidx.test.espresso:espresso-idling-resource:$androidx_espresso_idling_resource"
-
+    // orchestrator
+    def orchestrator_version = "1.2.0"
+    androidTestUtil "androidx.test:orchestrator:$orchestrator_version"
 
     // Kotlin test
     androidTestImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
 
+    // Espresso
+    def androidx_espresso_core = "3.2.0"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$androidx_espresso_core"
+    androidTestImplementation "androidx.test.espresso:espresso-contrib:$androidx_espresso_core"
+
+    def androidx_espresso_idling_resource = "3.2.0"
+    androidTestImplementation "androidx.test.espresso:espresso-idling-resource:$androidx_espresso_idling_resource"
+    implementation "androidx.test.espresso:espresso-idling-resource:$androidx_espresso_idling_resource"
+
+    // Mockk.io
+    def mockk_version = "1.9.2"
+    //def mockk_version = "1.9.3" // had issues with this
+    androidTestImplementation "io.mockk:mockk-android:$mockk_version"
+
+    // androidx.test
+    def androidx_test_runner = "1.2.0"
+    androidTestImplementation "androidx.test:runner:$androidx_test_runner"
+    androidTestImplementation "androidx.test:rules:$androidx_test_runner"
+
+    def androidx_test_core = "1.2.0"
+    androidTestImplementation "androidx.test:core-ktx:$androidx_test_core"
+
+
+    def androidx_test_ext = "1.1.1"
+    androidTestImplementation "androidx.test.ext:junit-ktx:$androidx_test_ext"
+
+    // androidx.fragment
+    def fragment_version = "1.2.0"
+    debugImplementation "androidx.fragment:fragment-testing:$fragment_version"
+    implementation "androidx.fragment:fragment-ktx:$fragment_version"
+
+    testImplementation "com.squareup.okhttp3:mockwebserver:$mockwebserver"
 
     // Navigation testing artifact
   //  androidTestImplementation 'androidx.navigation:navigation-testing:2.2.2'

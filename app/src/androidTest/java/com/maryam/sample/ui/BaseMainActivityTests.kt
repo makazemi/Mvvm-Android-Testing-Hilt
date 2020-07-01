@@ -17,7 +17,6 @@ abstract class BaseMainActivityTests{
 
     fun configureFakeApiService(
         blogsDataSource: String? = null,
-        categoriesDataSource: String? = null,
         networkDelay: Long? = null,
         application: TestBaseApplication
     ): FakeApiService {
@@ -27,14 +26,14 @@ abstract class BaseMainActivityTests{
         return apiService
     }
 
-//    fun configureFakeRepository(
-//        apiService: FakeApiService,
-//        application: TestBaseApplication
-//    ): FakeMainRepositoryImpl {
-//        val mainRepository = (application.appComponent as TestAppComponent).mainRepository
-//        mainRepository.apiService = apiService
-//        return mainRepository
-//    }
+    fun configureFakeRepository(
+        apiService: FakeApiService,
+        application: TestBaseApplication
+    ): FakeMainRepositoryImpl {
+        val mainRepository = (application.appComponent as TestAppComponent).mainRepository
+        mainRepository.apiService = apiService
+        return mainRepository
+    }
 
 
     abstract fun injectTest(application: TestBaseApplication)

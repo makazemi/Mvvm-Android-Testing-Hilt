@@ -7,6 +7,7 @@ import com.maryam.sample.db.PostDao
 import com.maryam.sample.model.Post
 import com.maryam.sample.model.PostResponse
 import com.maryam.sample.util.CacheResponseHandler
+import com.maryam.sample.util.wrapEspressoIdlingResource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -21,16 +22,15 @@ import kotlin.coroutines.CoroutineContext
  * That way I can alter the FakeApiService for each individual test.
  */
 @Singleton
-class FakeMainRepositoryImpl
-@Inject
-constructor(private val postDao: PostDao): MainRepository{
+class FakeMainRepositoryImpl @Inject
+constructor() : MainRepository {
 
-    private val CLASS_NAME: String = "FakeMainRepositoryImpl"
-
+    @Inject
+    lateinit var postDao: PostDao
     lateinit var apiService: FakeApiService
 
-    private fun throwExceptionIfApiServiceNotInitialzied(){
-        if(!::apiService.isInitialized){
+    private fun throwExceptionIfApiServiceNotInitialzied() {
+        if (!::apiService.isInitialized) {
             throw UninitializedPropertyAccessException(
                 "Did you forget to set the ApiService in FakeMainRepositoryImpl?"
             )
@@ -38,70 +38,81 @@ constructor(private val postDao: PostDao): MainRepository{
     }
 
     @Throws(UninitializedPropertyAccessException::class)
-    override fun getPostsApiOnly(coroutineContext: CoroutineContext): LiveData<DataState<List<Post>>>  =  liveData {
-        val apiResult = safeCacheCall(coroutineContext) {
-            postDao.fetchListPost()
-        }
-        emit(
-            object : CacheResponseHandler<List<Post>, List<Post>>(
-                response = apiResult
-            ) {
-                override suspend fun handleSuccess(resultObj: List<Post>?): DataState<List<Post>> {
-                    return DataState.data(resultObj)
+    override fun getPostsApiOnly(coroutineContext: CoroutineContext): LiveData<DataState<List<Post>>> =
+        wrapEspressoIdlingResource{
+            liveData {
+                val apiResult = safeCacheCall(coroutineContext) {
+                    postDao.fetchListPost()
                 }
-            }.getResult()
-        )
+                emit(
+                    object : CacheResponseHandler<List<Post>, List<Post>>(
+                        response = apiResult
+                    ) {
+                        override suspend fun handleSuccess(resultObj: List<Post>?): DataState<List<Post>> {
+                            return DataState.data(resultObj)
+                        }
+                    }.getResult()
+                )
 
-    }
+            }
+        }
+
 
     @Throws(UninitializedPropertyAccessException::class)
-    override fun getPostsCashOnly(coroutineContext: CoroutineContext): LiveData<DataState<List<Post>>> =  liveData {
-        val apiResult = safeCacheCall(coroutineContext) {
-            postDao.fetchListPost()
-        }
-        emit(
-            object : CacheResponseHandler<List<Post>, List<Post>>(
-                response = apiResult
-            ) {
-                override suspend fun handleSuccess(resultObj: List<Post>?): DataState<List<Post>> {
-                    return DataState.data(resultObj)
+    override fun getPostsCashOnly(coroutineContext: CoroutineContext): LiveData<DataState<List<Post>>> =
+        wrapEspressoIdlingResource {
+            liveData {
+                val apiResult = safeCacheCall(coroutineContext) {
+                    postDao.fetchListPost()
                 }
+                emit(
+                    object : CacheResponseHandler<List<Post>, List<Post>>(
+                        response = apiResult
+                    ) {
+                        override suspend fun handleSuccess(resultObj: List<Post>?): DataState<List<Post>> {
+                            return DataState.data(resultObj)
+                        }
 
-            }.getResult()
-        )
+                    }.getResult()
+                )
 
-    }
+            }
+        }
+
 
     @Throws(UninitializedPropertyAccessException::class)
     override fun getPostsNetworkBoundResource(coroutineContext: CoroutineContext): LiveData<DataState<List<Post>>> {
-        return object:NetworkBoundResource<PostResponse,List<Post>,List<Post>>(
-            coroutineContext,
-            apiCall = {apiService.getPosts()},
-            cacheCall = {postDao.fetchListPost()},
-            isNetworkAvailable = true
-        ){
-            override suspend fun updateCache(networkObject: PostResponse) {
-                if (networkObject.posts.isNotEmpty()) {
-                    withContext(Dispatchers.IO) {
-                        for (item in networkObject.posts) {
-                            try {
-                                launch {
-                                    postDao.insert(item)
+        wrapEspressoIdlingResource {
+            return object : NetworkBoundResource<PostResponse, List<Post>, List<Post>>(
+                coroutineContext,
+                apiCall = { apiService.getPosts() },
+                cacheCall = { postDao.fetchListPost() },
+                isNetworkAvailable = true
+            ) {
+                override suspend fun updateCache(networkObject: PostResponse) {
+                    if (networkObject.posts.isNotEmpty()) {
+                        withContext(Dispatchers.IO) {
+                            for (item in networkObject.posts) {
+                                try {
+                                    launch {
+                                        postDao.insert(item)
+                                    }
+                                } catch (e: Exception) {
                                 }
-                            } catch (e: Exception) {
                             }
                         }
                     }
                 }
-            }
 
-            override fun handleCacheSuccess(resultObj: List<Post>?): DataState<List<Post>> {
-                return DataState.data(resultObj)
-            }
+                override fun handleCacheSuccess(resultObj: List<Post>?): DataState<List<Post>> {
+                    return DataState.data(resultObj)
+                }
 
-            override fun shouldFetch(cacheObject: List<Post>?): Boolean = true
+                override fun shouldFetch(cacheObject: List<Post>?): Boolean = true
 
-        }.result
+            }.result
+        }
+
     }
 
 

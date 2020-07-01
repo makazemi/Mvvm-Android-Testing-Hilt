@@ -73,6 +73,6 @@ class ListPostFragment :BaseFragment() {
     }
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        (activity?.application as BaseApplication).appComponent.inject(this)
+        (requireActivity().application as BaseApplication).appComponent.inject(this)
     }
 }

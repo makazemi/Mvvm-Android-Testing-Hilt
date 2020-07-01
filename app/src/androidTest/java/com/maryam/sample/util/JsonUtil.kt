@@ -15,8 +15,6 @@ constructor(
     private val application: Application
 ){
 
-    private val CLASS_NAME = "JsonUtil"
-
     fun readJSONFromAsset(fileName: String): String? {
         var json: String? = null
         json = try {

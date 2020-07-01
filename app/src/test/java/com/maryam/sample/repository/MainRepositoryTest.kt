@@ -72,9 +72,9 @@ class MainRepositoryTest : CoroutineTestBase() {
 
                 /** THEN **/
                 assertItems(
-                    DataState.loading(true)
-                    //  ,
-                    //   DataState.data(postResponse.posts)
+                    DataState.loading<List<Post>>(true)
+                    ,
+                      DataState.data<List<Post>>(postResponse.posts)
                 )
             }
 

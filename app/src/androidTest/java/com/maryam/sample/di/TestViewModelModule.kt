@@ -1,6 +1,7 @@
 package com.maryam.sample.di
 
 import androidx.lifecycle.ViewModelProvider
+import com.maryam.sample.repository.FakeMainRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -12,16 +13,16 @@ import javax.inject.Singleton
 @Module
 object TestViewModelModule {
 
-//    @JvmStatic
-//    @Singleton
-//    @Provides
-//    fun provideViewModelFactory(
-//        mainRepository: FakeMainRepositoryImpl
-//    ): ViewModelProvider.Factory{
-//        return FakeMainViewModelFactory(
-//            mainRepository
-//        )
-//    }
+    @JvmStatic
+    @Singleton
+    @Provides
+    fun provideViewModelFactory(
+        mainRepository: FakeMainRepositoryImpl
+    ): ViewModelProvider.Factory{
+        return FakeMainViewModelFactory(
+            mainRepository
+        )
+    }
 }
 
 

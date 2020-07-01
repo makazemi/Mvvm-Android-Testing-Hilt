@@ -3,6 +3,7 @@ package com.maryam.sample.di
 import android.app.Application
 import com.maryam.sample.api.FakeApiService
 import com.maryam.sample.repository.FakeMainRepositoryImpl
+import com.maryam.sample.ui.ListPostFragmentTest
 import dagger.BindsInstance
 import dagger.Component
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -13,15 +14,14 @@ import javax.inject.Singleton
 @InternalCoroutinesApi
 @Singleton
 @Component(modules = [
-  //  TestViewModelModule::class,
-    ViewModelModule::class,
+    TestViewModelModule::class,
     TestAppModule::class
 ])
 interface TestAppComponent: AppComponent {
 
     val apiService: FakeApiService
 
-   // val mainRepository: FakeMainRepositoryImpl
+    val mainRepository: FakeMainRepositoryImpl
 
     @Component.Builder
     interface Builder {
@@ -32,15 +32,7 @@ interface TestAppComponent: AppComponent {
         fun build(): TestAppComponent
     }
 
-   //fun inject(fragment:ListPostFragmentTest)
-//
-//    fun inject(listFragmentErrorTests: ListFragmentErrorTests)
-//
-//    fun inject(mainActivityIntegrationTests: ListFragmentIntegrationTests)
-//
-//    fun inject(mainNavigationTests: MainNavigationTests)
-//
-//    fun inject(listFragmentNavigationTests: ListFragmentNavigationTests)
+    fun inject(sample:ListPostFragmentTest)
 
 }
 

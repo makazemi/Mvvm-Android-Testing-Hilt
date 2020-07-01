@@ -25,6 +25,7 @@
         tools:layout="@layout/fragment_detail_post" >
         <argument
             android:name="postArg"
-            app:argType="com.maryam.sample.model.Post" />
+            app:argType="com.maryam.sample.model.Post"
+          />
     </fragment>
 </navigation>

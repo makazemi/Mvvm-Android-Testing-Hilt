@@ -18,7 +18,7 @@ constructor(
     private val jsonUtil: JsonUtil
 ): ApiService {
 
-     var blogPostsJsonFileName: String = Constants.BLOG_POSTS_DATA_FILENAME
+     var blogPostsJsonFileName: String = BLOG_POSTS_DATA_FILENAME
      var networkDelay: Long = 0L
 
     override suspend fun getPosts(token: String): GenericApiResponse<PostResponse> {

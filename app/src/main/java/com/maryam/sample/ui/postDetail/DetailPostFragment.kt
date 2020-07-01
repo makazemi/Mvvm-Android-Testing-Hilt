@@ -30,8 +30,11 @@ class DetailPostFragment : BaseFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        val post=args.postArg
-        initView(post)
+        val post:Post?=args.postArg
+        post?.let {
+            initView(it)
+        }
+
     }
 
     private fun initView(item:Post){
@@ -43,6 +46,6 @@ class DetailPostFragment : BaseFragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        (activity?.application as BaseApplication).appComponent.inject(this)
+        (requireActivity().application as BaseApplication).appComponent.inject(this)
     }
 }
