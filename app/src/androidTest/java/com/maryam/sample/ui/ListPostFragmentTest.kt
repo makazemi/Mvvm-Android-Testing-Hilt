@@ -1,9 +1,7 @@
 package com.maryam.sample.ui
 
-import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.testing.launchFragmentInContainer
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import com.maryam.sample.R
@@ -75,6 +73,22 @@ class ListPostFragmentTest : BaseMainActivityTests(){
         val scenario = launchFragmentInContainer<ListPostFragment>()
 
         onView(withText("HTTP 204. Returned NOTHING.")).inRoot(ToastMatcher()).check(matches(isDisplayed()))
+        onView(withText("Some titles")).check(doesNotExist())
+    }
+
+    @Test
+    fun loadItem_error(){
+        val apiService = configureFakeApiService(
+            blogsDataSource = Constants.SERVER_ERROR_FILENAME, // error
+            networkDelay = 0L,
+            application = app
+        )
+        configureFakeRepository(apiService,app)
+        injectTest(app)
+
+        val scenario = launchFragmentInContainer<ListPostFragment>()
+
+        onView(withText("SERVER ERROR")).inRoot(ToastMatcher()).check(matches(isDisplayed()))
         onView(withText("Some titles")).check(doesNotExist())
     }
 
