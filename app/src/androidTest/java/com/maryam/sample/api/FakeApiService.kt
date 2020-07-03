@@ -34,6 +34,7 @@ constructor(
             return ApiErrorResponse(ErrorBody(message = "SERVER ERROR"))
         else
             return ApiEmptyResponse()
+
     }
 
 }

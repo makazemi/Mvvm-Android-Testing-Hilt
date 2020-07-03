@@ -27,11 +27,11 @@ class MainRepositoryImpl @Inject constructor(private val apiService: ApiService
             }
 
             emit(
-                object : ApiResponseHandler<List<Post>,PostResponse>(
+                object : ApiResponseHandler<List<Post>, PostResponse>(
                     response = apiResult
                 ) {
                     override suspend fun handleSuccess(resultObj: PostResponse): DataState<List<Post>> {
-                        return DataState.data(resultObj.posts)
+                        return DataState.data(resultObj.items)
                     }
 
 
@@ -65,9 +65,9 @@ class MainRepositoryImpl @Inject constructor(private val apiService: ApiService
            isNetworkAvailable = sessionManager.isConnectedToTheInternet()
        ){
            override suspend fun updateCache(networkObject: PostResponse) {
-               if (networkObject.posts.isNotEmpty()) {
+               if (networkObject.items.isNotEmpty()) {
                    withContext(Dispatchers.IO) {
-                       for (item in networkObject.posts) {
+                       for (item in networkObject.items) {
                            try {
                                launch {
                                    postDao.insert(item)

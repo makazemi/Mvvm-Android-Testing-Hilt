@@ -1,9 +1,7 @@
 package com.maryam.sample.util
 
 import android.app.Application
-import android.content.res.AssetManager
 import java.io.IOException
-import java.io.InputStream
 import javax.inject.Inject
 
 /**
@@ -18,8 +16,10 @@ constructor(
     fun readJSONFromAsset(fileName: String): String? {
         var json: String? = null
         json = try {
-            val inputStream: InputStream = (application.assets as AssetManager).open(fileName)
+            val inputStream = javaClass.classLoader
+                .getResourceAsStream("api-response/$fileName")
             inputStream.bufferedReader().use{it.readText()}
+
         } catch (ex: IOException) {
             ex.printStackTrace()
             return null

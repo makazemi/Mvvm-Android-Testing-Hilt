@@ -4,6 +4,7 @@ import android.app.Application
 import com.maryam.sample.api.FakeApiService
 import com.maryam.sample.repository.FakeMainRepositoryImpl
 import com.maryam.sample.ui.ListPostFragmentTest
+import com.maryam.sample.util.SessionManager
 import dagger.BindsInstance
 import dagger.Component
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -22,6 +23,7 @@ interface TestAppComponent: AppComponent {
     val apiService: FakeApiService
 
     val mainRepository: FakeMainRepositoryImpl
+
 
     @Component.Builder
     interface Builder {

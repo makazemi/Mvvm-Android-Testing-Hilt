@@ -8,7 +8,8 @@ import javax.inject.Singleton
 
 @Singleton
 interface ApiService {
-    @GET("5ef30832e2ce6e3b2c78907b")
+    @GET("5ed788d079382f568bd24eed/1")
+    //@GET("posts")
     suspend fun getPosts(
         @Header("secret-key") token: String=SECRET_KEY
     ): GenericApiResponse<PostResponse>

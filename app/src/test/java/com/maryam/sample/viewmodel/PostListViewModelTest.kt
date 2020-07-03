@@ -6,7 +6,6 @@ import com.maryam.sample.ui.postList.PostListViewModel
 import com.maryam.sample.util.MainCoroutineRule
 import com.maryam.sample.util.TestUtil
 import com.maryam.sample.util.getOrAwaitValue
-import com.maryam.sample.util.observeForTesting
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.*

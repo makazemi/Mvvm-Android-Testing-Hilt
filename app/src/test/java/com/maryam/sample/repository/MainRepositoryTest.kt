@@ -74,7 +74,7 @@ class MainRepositoryTest : CoroutineTestBase() {
                 assertItems(
                     DataState.loading<List<Post>>(true)
                     ,
-                      DataState.data<List<Post>>(postResponse.posts)
+                      DataState.data<List<Post>>(postResponse.items)
                 )
             }
 
@@ -86,8 +86,8 @@ class MainRepositoryTest : CoroutineTestBase() {
     fun getPostCashOnlyTest() {
 
         val list = ArrayList<Post>()
-        val post1 = TestUtil.createPost(22, 34, "new post", "fake body fake body fake body")
-        val post2 = TestUtil.createPost(23, 34, "new post2", "fake body fake body fake body2")
+        val post1 = TestUtil.createPost(22, "new post", "fake body fake body fake body")
+        val post2 = TestUtil.createPost(23, "new post2", "fake body fake body fake body2")
         list.add(post1)
         list.add(post2)
         runBlockingTest {

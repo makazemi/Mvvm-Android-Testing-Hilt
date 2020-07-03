@@ -10,7 +10,10 @@ import kotlinx.android.parcel.Parcelize
 data class Post(
     @PrimaryKey
     val id: Int,
-    val userId: Int,
-    val title: String,
-    val body: String
+    val imagePath: String,
+    val title: String
+//    var id: Int,
+//    var userId: Int,
+//    var title: String,
+//    var body: String
 ):Parcelable

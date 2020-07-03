@@ -15,12 +15,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.maryam.sample.model.Post
 import kotlinx.android.synthetic.main.fragment_list_post.*
 
-class ListPostFragment :BaseFragment() {
+class ListPostFragment : BaseFragment() {
 
-    private val viewModel:PostListViewModel by viewModels{
+    private val viewModel: PostListViewModel by viewModels {
         viewModelFactory
     }
-    private lateinit var postAdapter:PostAdapter
+    private lateinit var postAdapter: PostAdapter
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -32,45 +32,51 @@ class ListPostFragment :BaseFragment() {
         super.onActivityCreated(savedInstanceState)
         initRcy()
         subscribeObserverPost()
+
     }
 
-    private fun initRcy(){
-        postAdapter= PostAdapter()
+    private fun initRcy() {
+        postAdapter = PostAdapter()
         postAdapter.setClickListenerRoot { itemClick(it) }
         rcy_post.apply {
-            layoutManager=LinearLayoutManager(this@ListPostFragment.context)
-            adapter=postAdapter
+            layoutManager = LinearLayoutManager(this@ListPostFragment.context)
+            adapter = postAdapter
         }
 
     }
-    private fun subscribeObserverPost(){
+
+    private fun subscribeObserverPost() {
         viewModel.listPostApiOnly.observe(viewLifecycleOwner, Observer {
             it?.data?.getContentIfNotHandled()?.let {
                 postAdapter.submitList(it)
             }
-            onDataStateChange(it.loading,it.error)
+            onDataStateChange(it.loading, it.error)
         })
     }
-    private fun itemClick(item:Post){
+
+    private fun itemClick(item: Post) {
         navigateToDetail(item)
     }
-    private fun navigateToDetail(item:Post){
+
+    private fun navigateToDetail(item: Post) {
         val action =
-        ListPostFragmentDirections.actionListPostFragmentToDetailPostFragment(item)
-        if(findNavController().currentDestination?.id==R.id.listPostFragment)
+            ListPostFragmentDirections.actionListPostFragmentToDetailPostFragment(item)
+        if (findNavController().currentDestination?.id == R.id.listPostFragment)
             this.findNavController().navigate(action)
     }
+
     override fun displayProgressBar(inProgress: Boolean) {
-        if(inProgress)
-            progressBar.visibility=View.VISIBLE
+        if (inProgress)
+            progressBar.visibility = View.VISIBLE
         else
-            progressBar.visibility=View.GONE
+            progressBar.visibility = View.GONE
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        rcy_post.adapter=null
+        rcy_post.adapter = null
     }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         (requireActivity().application as BaseApplication).appComponent.inject(this)

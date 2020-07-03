@@ -1,9 +1,10 @@
 package com.maryam.sample.ui
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.testing.launchFragmentInContainer
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import com.maryam.sample.R
 import com.maryam.sample.TestBaseApplication
@@ -29,8 +30,9 @@ import org.junit.Rule
 @RunWith(AndroidJUnit4::class)
 class ListPostFragmentTest : BaseMainActivityTests(){
 
-    @get: Rule
-    val espressoIdlingResourceRule = EspressoIdlingResourceRule()
+//    @get: Rule
+//    val espressoIdlingResourceRule = EspressoIdlingResourceRule()
+
 
     lateinit var app:TestBaseApplication
     @Before
@@ -54,25 +56,26 @@ class ListPostFragmentTest : BaseMainActivityTests(){
         val scenario = launchFragmentInContainer<ListPostFragment>()
 
         onView(withId(R.id.rcy_post)).check(matches(isDisplayed()))
+        onView(withText("Some titles")).check(matches(isDisplayed()))
+        onView(withText("Some other titles")).check(matches(isDisplayed()))
+    }
+
+
+
+    @Test
+    fun detailPostFragment_showItem(){
+        val bundle=Bundle().apply {
+            putParcelable("postArg",Post(1,"path","title"))
+        }
+
+        val scenario = launchFragmentInContainer<DetailPostFragment>(bundle,R.style.AppTheme)
+
+        onView(withId(R.id.txt_id)).check(matches(withText("1")))
+        onView(withId(R.id.txt_title)).check(matches(withText("title")))
     }
 
     override fun injectTest(application: TestBaseApplication) {
         (application.appComponent as TestAppComponent)
             .inject(this)
     }
-
-    @Test
-    fun detailPostFragment_showItem(){
-        val bundle=Bundle().apply {
-            putParcelable("postArg",Post(1,1,"title","body"))
-        }
-
-        val scenario = launchFragmentInContainer<DetailPostFragment>(bundle,R.style.AppTheme)
-
-        onView(withId(R.id.txt_id)).check(matches(withText("1")))
-        onView(withId(R.id.txt_user_id)).check(matches(withText("1")))
-        onView(withId(R.id.txt_title)).check(matches(withText("title")))
-        onView(withId(R.id.txt_body)).check(matches(withText("body")))
-    }
-
 }

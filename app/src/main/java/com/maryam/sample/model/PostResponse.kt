@@ -1,5 +1,5 @@
 package com.maryam.sample.model
 
 data class PostResponse(
-    val posts:List<Post>
+    var items:List<Post>
 )

@@ -40,8 +40,8 @@ class DetailPostFragment : BaseFragment() {
     private fun initView(item:Post){
         txt_id.text=item.id.toString()
         txt_title.text=item.title
-        txt_body.text=item.body
-        txt_user_id.text=item.userId.toString()
+        txt_body.text=item.imagePath
+        //txt_user_id.text=item.userId.toString()
     }
 
     override fun onAttach(context: Context) {

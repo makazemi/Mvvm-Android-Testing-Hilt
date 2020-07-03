@@ -6,9 +6,7 @@ import com.maryam.sample.api.FakeApiService
 import com.maryam.sample.db.PostDao
 import com.maryam.sample.model.Post
 import com.maryam.sample.model.PostResponse
-import com.maryam.sample.util.CacheResponseHandler
-import com.maryam.sample.util.EspressoIdlingResource
-import com.maryam.sample.util.wrapEspressoIdlingResource
+import com.maryam.sample.util.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -31,6 +29,9 @@ constructor() : MainRepository {
     lateinit var postDao: PostDao
     lateinit var apiService: FakeApiService
 
+   @Inject
+   lateinit var sessionManager:SessionManager
+
     private fun throwExceptionIfApiServiceNotInitialzied() {
         if (!::apiService.isInitialized) {
             throw UninitializedPropertyAccessException(
@@ -41,26 +42,29 @@ constructor() : MainRepository {
 
     @Throws(UninitializedPropertyAccessException::class)
     override fun getPostsApiOnly(coroutineContext: CoroutineContext): LiveData<DataState<List<Post>>> =
-        wrapEspressoIdlingResource{
-            liveData {
-                EspressoIdlingResource.increment()
-                val apiResult = safeCacheCall(coroutineContext) {
-                    postDao.fetchListPost()
-                }
-                emit(
-                    object : CacheResponseHandler<List<Post>, List<Post>>(
-                        response = apiResult
-                    ) {
-                        override suspend fun handleSuccess(resultObj: List<Post>?): DataState<List<Post>> {
-                            return DataState.data(resultObj)
-                        }
-                    }.getResult()
-                )
-
+      //  wrapEspressoIdlingResource{
+        liveData {
+            emit(DataState.loading(true))
+            val apiResult = safeApiCall(sessionManager.isConnectedToTheInternet(),coroutineContext) {
+                apiService.getPosts()
             }
 
+            emit(
+                object : ApiResponseHandler<List<Post>, PostResponse>(
+                    response = apiResult
+                ) {
+                    override suspend fun handleSuccess(resultObj: PostResponse): DataState<List<Post>> {
+                        return DataState.data(resultObj.items)
+                    }
 
-       }
+
+                }.getResult()
+            )
+        }
+
+
+
+    // }
 
 
     @Throws(UninitializedPropertyAccessException::class)
@@ -95,9 +99,9 @@ constructor() : MainRepository {
                 isNetworkAvailable = true
             ) {
                 override suspend fun updateCache(networkObject: PostResponse) {
-                    if (networkObject.posts.isNotEmpty()) {
+                    if (networkObject.items.isNotEmpty()) {
                         withContext(Dispatchers.IO) {
-                            for (item in networkObject.posts) {
+                            for (item in networkObject.items) {
                                 try {
                                     launch {
                                         postDao.insert(item)
