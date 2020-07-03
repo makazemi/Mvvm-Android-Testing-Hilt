@@ -23,6 +23,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.maryam.sample.model.Post
 import com.maryam.sample.ui.postDetail.DetailPostFragment
 import com.maryam.sample.util.EspressoIdlingResourceRule
+import com.maryam.sample.util.ToastMatcher
 import org.junit.Rule
 
 @ExperimentalCoroutinesApi
@@ -44,7 +45,7 @@ class ListPostFragmentTest : BaseMainActivityTests(){
     }
 
     @Test
-    fun loadPost_success(){
+    fun loadItem_success(){
         val apiService = configureFakeApiService(
             blogsDataSource = Constants.BLOG_POSTS_DATA_FILENAME, // full list of data
             networkDelay = 0L,
@@ -61,6 +62,21 @@ class ListPostFragmentTest : BaseMainActivityTests(){
     }
 
 
+    @Test
+    fun loadItem_empty(){
+        val apiService = configureFakeApiService(
+            blogsDataSource = Constants.EMPTY_LIST, // empty list
+            networkDelay = 0L,
+            application = app
+        )
+        configureFakeRepository(apiService,app)
+        injectTest(app)
+
+        val scenario = launchFragmentInContainer<ListPostFragment>()
+
+        onView(withText("HTTP 204. Returned NOTHING.")).inRoot(ToastMatcher()).check(matches(isDisplayed()))
+        onView(withText("Some titles")).check(doesNotExist())
+    }
 
     @Test
     fun detailPostFragment_showItem(){

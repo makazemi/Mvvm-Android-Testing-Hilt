@@ -1,6 +1,7 @@
 package com.maryam.sample.api
 
 
+import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.maryam.sample.model.PostResponse
@@ -23,17 +24,21 @@ constructor(
 
     override suspend fun getPosts(token: String): GenericApiResponse<PostResponse> {
         val rawJson = jsonUtil.readJSONFromAsset(blogPostsJsonFileName)
+        Log.d("FakeApiService","rawJson=$rawJson")
         val blogs = Gson().fromJson<PostResponse>(
             rawJson,
             object : TypeToken<PostResponse>() {}.type
         )
+        Log.d("FakeApiService","blogs=$blogs")
         delay(networkDelay)
         if(blogPostsJsonFileName==BLOG_POSTS_DATA_FILENAME)
             return ApiSuccessResponse(blogs)
         else if(blogPostsJsonFileName==SERVER_ERROR_FILENAME)
             return ApiErrorResponse(ErrorBody(message = "SERVER ERROR"))
-        else
+        else {
+            Log.d("FakeApiService","apiEmptyResponse")
             return ApiEmptyResponse()
+        }
 
     }
 
