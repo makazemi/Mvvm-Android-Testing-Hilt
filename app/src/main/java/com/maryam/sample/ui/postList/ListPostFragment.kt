@@ -47,7 +47,7 @@ class ListPostFragment : BaseFragment() {
 
     private fun subscribeObserverPost() {
         viewModel.listPostApiOnly.observe(viewLifecycleOwner, Observer {
-            it?.data?.getContentIfNotHandled()?.let {
+            it?.data?.peekContent()?.let {
                 postAdapter.submitList(it)
             }
             onDataStateChange(it.loading, it.error)

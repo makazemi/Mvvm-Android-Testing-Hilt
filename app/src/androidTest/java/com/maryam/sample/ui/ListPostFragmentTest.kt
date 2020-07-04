@@ -2,6 +2,7 @@ package com.maryam.sample.ui
 
 import android.os.Bundle
 import androidx.fragment.app.testing.launchFragmentInContainer
+import androidx.test.core.app.launchActivity
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import com.maryam.sample.R
@@ -16,10 +17,14 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import androidx.test.espresso.assertion.ViewAssertions.*
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso.pressBack
+import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.maryam.sample.model.Post
 import com.maryam.sample.ui.postDetail.DetailPostFragment
+import com.maryam.sample.ui.postList.PostAdapter
 import com.maryam.sample.util.EspressoIdlingResourceRule
 import com.maryam.sample.util.ToastMatcher
 import org.junit.Rule
@@ -29,8 +34,8 @@ import org.junit.Rule
 @RunWith(AndroidJUnit4::class)
 class ListPostFragmentTest : BaseMainActivityTests(){
 
-//    @get: Rule
-//    val espressoIdlingResourceRule = EspressoIdlingResourceRule()
+    @get: Rule
+    val espressoIdlingResourceRule = EspressoIdlingResourceRule()
 
 
     lateinit var app:TestBaseApplication
@@ -102,6 +107,42 @@ class ListPostFragmentTest : BaseMainActivityTests(){
 
         onView(withId(R.id.txt_id)).check(matches(withText("1")))
         onView(withId(R.id.txt_title)).check(matches(withText("title")))
+    }
+
+    @Test
+    fun navigationTest(){
+
+        val apiService = configureFakeApiService(
+            blogsDataSource = Constants.BLOG_POSTS_DATA_FILENAME, // full list of data
+            networkDelay = 0L,
+            application = app
+        )
+        configureFakeRepository(apiService,app)
+        injectTest(app)
+        val SELECTED_LIST_INDEX=25
+
+        val scenario = launchActivity<MainActivity>()
+
+        onView(withId(R.id.rcy_post)).check(matches(isDisplayed()))
+
+        onView(withId(R.id.rcy_post)).perform(
+            RecyclerViewActions.scrollToPosition<PostAdapter.ViewHolder>(SELECTED_LIST_INDEX)
+        )
+
+        // Nav DetailFragment
+        onView(withId(R.id.rcy_post)).perform(
+            RecyclerViewActions.actionOnItemAtPosition<PostAdapter.ViewHolder>(SELECTED_LIST_INDEX,
+                ViewActions.click()
+            )
+        )
+
+        onView(withId(R.id.txt_id)).check(matches(withText("38")))
+        onView(withId(R.id.txt_title)).check(matches(withText("test title 26")))
+        onView(withId(R.id.txt_body)).check(matches(withText("https://base_url/bqHgw1GPT6lxngcejPf7QWqKBsSFbHHn6vdQdLPKe.jpeg")))
+
+        pressBack()
+
+        onView(withId(R.id.rcy_post)).check(matches(isDisplayed()))
     }
 
     override fun injectTest(application: TestBaseApplication) {

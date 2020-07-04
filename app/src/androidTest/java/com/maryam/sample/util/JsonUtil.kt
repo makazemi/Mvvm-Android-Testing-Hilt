@@ -19,7 +19,7 @@ constructor(
         json = try {
             val inputStream = javaClass.classLoader
                 .getResourceAsStream("api-response/$fileName")
-            Log.d("FakeApiService","buffer=${inputStream.bufferedReader().use{it.readLine()}}")
+        //    Log.d("FakeApiService","buffer=${inputStream.bufferedReader().use{it.readLine()}}")
             inputStream.bufferedReader().use{it.readText()}
 
         } catch (ex: IOException) {

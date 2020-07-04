@@ -42,7 +42,7 @@ constructor() : MainRepository {
 
     @Throws(UninitializedPropertyAccessException::class)
     override fun getPostsApiOnly(coroutineContext: CoroutineContext): LiveData<DataState<List<Post>>> =
-      //  wrapEspressoIdlingResource{
+        wrapEspressoIdlingResource{
         liveData {
             emit(DataState.loading(true))
             val apiResult = safeApiCall(sessionManager.isConnectedToTheInternet(),coroutineContext) {
@@ -62,9 +62,7 @@ constructor() : MainRepository {
             )
         }
 
-
-
-    // }
+    }
 
 
     @Throws(UninitializedPropertyAccessException::class)
