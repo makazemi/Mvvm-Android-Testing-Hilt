@@ -119,6 +119,8 @@ dependencies {
     def mockk_version = "1.9.2"
     //def mockk_version = "1.9.3" // had issues with this
     androidTestImplementation "io.mockk:mockk-android:$mockk_version"
+    androidTestImplementation "org.mockito:mockito-core:$mockitoVersion"
+    androidTestImplementation "com.linkedin.dexmaker:dexmaker-mockito:$dexMakerVersion"
 
     // androidx.test
     def androidx_test_runner = "1.2.0"

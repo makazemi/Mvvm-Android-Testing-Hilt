@@ -2,6 +2,8 @@ package com.maryam.sample.ui
 
 import android.os.Bundle
 import androidx.fragment.app.testing.launchFragmentInContainer
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import androidx.test.core.app.launchActivity
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
@@ -22,12 +24,21 @@ import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.maryam.sample.model.Post
+import com.maryam.sample.model.PostResponse
 import com.maryam.sample.ui.postDetail.DetailPostFragment
+import com.maryam.sample.ui.postList.ListPostFragmentDirections
 import com.maryam.sample.ui.postList.PostAdapter
 import com.maryam.sample.util.EspressoIdlingResourceRule
+import com.maryam.sample.util.JsonUtil
 import com.maryam.sample.util.ToastMatcher
+import org.mockito.Mockito.verify
 import org.junit.Rule
+import org.mockito.Mockito.mock
+import javax.inject.Inject
+import kotlin.test.assertEquals
 
 @ExperimentalCoroutinesApi
 @InternalCoroutinesApi
@@ -39,6 +50,10 @@ class ListPostFragmentTest : BaseMainActivityTests(){
 
 
     lateinit var app:TestBaseApplication
+
+    @Inject
+    lateinit var jsonUtil: JsonUtil
+
     @Before
     fun setup(){
         app = InstrumentationRegistry
@@ -110,7 +125,7 @@ class ListPostFragmentTest : BaseMainActivityTests(){
     }
 
     @Test
-    fun navigationTest(){
+    fun clickItem_navigateToDetail(){
 
         val apiService = configureFakeApiService(
             blogsDataSource = Constants.BLOG_POSTS_DATA_FILENAME, // full list of data
@@ -143,6 +158,51 @@ class ListPostFragmentTest : BaseMainActivityTests(){
         pressBack()
 
         onView(withId(R.id.rcy_post)).check(matches(isDisplayed()))
+
+    }
+
+    @Test
+    fun navigationTest(){
+        val apiService = configureFakeApiService(
+            blogsDataSource = Constants.BLOG_POSTS_DATA_FILENAME, // full list of data
+            networkDelay = 0L,
+            application = app
+        )
+        configureFakeRepository(apiService,app)
+        injectTest(app)
+        val rawJson = jsonUtil.readJSONFromAsset(Constants.BLOG_POSTS_DATA_FILENAME)
+        val postResponse = Gson().fromJson<PostResponse>(
+            rawJson,
+            object : TypeToken<PostResponse>() {}.type
+        )
+        val SELECTED_LIST_INDEX=16
+        val post=postResponse.items[SELECTED_LIST_INDEX]
+
+        // GIVEN - On the home screen
+        val scenario = launchFragmentInContainer<ListPostFragment>()
+        val navController = mock(NavController::class.java)
+
+        scenario.onFragment { fragment ->
+            Navigation.setViewNavController(fragment.requireView(), navController)
+        }
+
+        // WHEN - Click on the first list item
+        onView(withId(R.id.rcy_post)).perform(
+            RecyclerViewActions.scrollToPosition<PostAdapter.ViewHolder>(SELECTED_LIST_INDEX)
+        )
+
+        onView(withId(R.id.rcy_post)).perform(
+            RecyclerViewActions.actionOnItemAtPosition<PostAdapter.ViewHolder>(SELECTED_LIST_INDEX,
+                ViewActions.click()
+            )
+        )
+
+        // THEN - Verify that we navigate to the first detail screen
+        verify(navController).navigate(
+            ListPostFragmentDirections.actionListPostFragmentToDetailPostFragment(post)
+        )
+
+
     }
 
     override fun injectTest(application: TestBaseApplication) {

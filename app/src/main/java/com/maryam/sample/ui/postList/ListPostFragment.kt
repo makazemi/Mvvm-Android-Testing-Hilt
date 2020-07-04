@@ -61,7 +61,7 @@ class ListPostFragment : BaseFragment() {
     private fun navigateToDetail(item: Post) {
         val action =
             ListPostFragmentDirections.actionListPostFragmentToDetailPostFragment(item)
-        if (findNavController().currentDestination?.id == R.id.listPostFragment)
+     //   if (findNavController().currentDestination?.id == R.id.listPostFragment)
             this.findNavController().navigate(action)
     }
 
