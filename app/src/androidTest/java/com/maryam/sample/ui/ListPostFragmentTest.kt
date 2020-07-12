@@ -38,7 +38,6 @@ import org.mockito.Mockito.verify
 import org.junit.Rule
 import org.mockito.Mockito.mock
 import javax.inject.Inject
-import kotlin.test.assertEquals
 
 @ExperimentalCoroutinesApi
 @InternalCoroutinesApi
