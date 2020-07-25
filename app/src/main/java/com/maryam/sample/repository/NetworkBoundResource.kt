@@ -1,11 +1,11 @@
 package com.maryam.sample.repository
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.liveData
 import com.maryam.sample.util.*
 import com.maryam.sample.util.ErrorHandling.Companion.ERROR_UNKNOWN
 import com.maryam.sample.util.ErrorHandling.Companion.UNABLE_TODO_OPERATION_WO_INTERNET
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlin.coroutines.CoroutineContext
 
 
@@ -18,7 +18,7 @@ constructor(
 ) {
     private val TAG: String = "NetworkBoundResource"
 
-    val result: LiveData<DataState<ResultType>> = liveData() {
+    val result: Flow<DataState<ResultType>> = flow{
 
         emit(DataState.loading<ResultType>(true, cachedData = null))
 
