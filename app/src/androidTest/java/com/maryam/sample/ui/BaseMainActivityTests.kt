@@ -1,8 +1,6 @@
 package com.maryam.sample.ui
 
-import com.maryam.sample.TestBaseApplication
 import com.maryam.sample.api.FakeApiService
-import com.maryam.sample.di.TestAppComponent
 import com.maryam.sample.repository.FakeMainRepositoryImpl
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi

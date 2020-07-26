@@ -8,8 +8,6 @@ import androidx.test.core.app.launchActivity
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import com.maryam.sample.R
-import com.maryam.sample.TestBaseApplication
-import com.maryam.sample.di.TestAppComponent
 import com.maryam.sample.ui.postList.ListPostFragment
 import com.maryam.sample.util.Constants
 import kotlinx.coroutines.ExperimentalCoroutinesApi

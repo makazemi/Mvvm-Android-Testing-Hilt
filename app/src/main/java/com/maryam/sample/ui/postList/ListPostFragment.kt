@@ -1,25 +1,23 @@
 package com.maryam.sample.ui.postList
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.maryam.sample.R
-import com.maryam.sample.base.BaseApplication
 import com.maryam.sample.base.BaseFragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.maryam.sample.model.Post
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_list_post.*
 
+@AndroidEntryPoint
 class ListPostFragment : BaseFragment() {
 
-    private val viewModel: PostListViewModel by viewModels {
-        viewModelFactory
-    }
+    private val viewModel: PostListViewModel by viewModels ()
     private lateinit var postAdapter: PostAdapter
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -77,8 +75,4 @@ class ListPostFragment : BaseFragment() {
         rcy_post.adapter = null
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        (requireActivity().application as BaseApplication).appComponent.inject(this)
-    }
 }

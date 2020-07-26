@@ -13,12 +13,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
-import javax.inject.Singleton
+
 import kotlin.coroutines.CoroutineContext
 
-@Singleton
-class MainRepositoryImpl @Inject constructor(private val apiService: ApiService
+
+class MainRepositoryImpl  constructor(private val apiService: ApiService
 ,private val postDao: PostDao,private val sessionManager: SessionManager):MainRepository {
     override fun getPostsApiOnly(coroutineContext: CoroutineContext): Flow<DataState<List<Post>>> =
         flow {

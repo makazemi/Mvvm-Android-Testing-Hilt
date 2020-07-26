@@ -1,19 +1,19 @@
 package com.maryam.sample.ui.postDetail
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.navArgs
 import com.maryam.sample.R
-import com.maryam.sample.base.BaseApplication
 import com.maryam.sample.base.BaseFragment
 import com.maryam.sample.model.Post
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_detail_post.*
 import kotlinx.android.synthetic.main.post_item_rcy.txt_id
 import kotlinx.android.synthetic.main.post_item_rcy.txt_title
 
+@AndroidEntryPoint
 class DetailPostFragment : BaseFragment() {
 
     private val args: DetailPostFragmentArgs by navArgs()
@@ -43,8 +43,4 @@ class DetailPostFragment : BaseFragment() {
         txt_body.text=item.imagePath
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        (requireActivity().application as BaseApplication).appComponent.inject(this)
-    }
 }

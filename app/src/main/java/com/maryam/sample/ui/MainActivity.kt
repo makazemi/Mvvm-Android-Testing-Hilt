@@ -1,17 +1,14 @@
 package com.maryam.sample.ui
 
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.maryam.sample.R
-import com.maryam.sample.base.BaseActivity
-import com.maryam.sample.base.BaseApplication
+import dagger.hilt.android.AndroidEntryPoint
 
-class MainActivity : BaseActivity() {
+@AndroidEntryPoint
+class MainActivity : AppCompatActivity() {
 
 
-    override fun inject() {
-        (application as BaseApplication).appComponent
-            .inject(this)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
