@@ -1,18 +1,14 @@
 package com.maryam.sample.ui
 
 import android.os.Bundle
-import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.test.core.app.launchActivity
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.platform.app.InstrumentationRegistry
 import com.maryam.sample.R
 import com.maryam.sample.ui.postList.ListPostFragment
-import com.maryam.sample.util.Constants
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import androidx.test.espresso.assertion.ViewAssertions.*
@@ -24,14 +20,19 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.maryam.sample.api.FakeApiService
+import com.maryam.sample.di.AppModule
 import com.maryam.sample.model.Post
 import com.maryam.sample.model.PostResponse
+import com.maryam.sample.repository.FakeMainRepositoryImpl
 import com.maryam.sample.ui.postDetail.DetailPostFragment
 import com.maryam.sample.ui.postList.ListPostFragmentDirections
 import com.maryam.sample.ui.postList.PostAdapter
-import com.maryam.sample.util.EspressoIdlingResourceRule
-import com.maryam.sample.util.JsonUtil
-import com.maryam.sample.util.ToastMatcher
+import com.maryam.sample.util.*
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
+import org.junit.Before
 import org.mockito.Mockito.verify
 import org.junit.Rule
 import org.mockito.Mockito.mock
@@ -39,37 +40,42 @@ import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
 @InternalCoroutinesApi
+@UninstallModules(AppModule::class)
+@HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
-class ListPostFragmentTest : BaseMainActivityTests(){
+class ListPostFragmentTest {
+
+    @get:Rule
+    var hiltRule = HiltAndroidRule(this)
 
     @get: Rule
     val espressoIdlingResourceRule = EspressoIdlingResourceRule()
 
+    @Before
+    fun init(){
+        hiltRule.inject()
+    }
 
-    lateinit var app:TestBaseApplication
+    @Inject
+    lateinit var apiService: FakeApiService
+
+    @Inject
+    lateinit var mainRepository: FakeMainRepositoryImpl
 
     @Inject
     lateinit var jsonUtil: JsonUtil
 
-    @Before
-    fun setup(){
-        app = InstrumentationRegistry
-            .getInstrumentation()
-            .targetContext
-            .applicationContext as TestBaseApplication
-    }
 
     @Test
     fun loadItem_success(){
         val apiService = configureFakeApiService(
             blogsDataSource = Constants.BLOG_POSTS_DATA_FILENAME, // full list of data
-            networkDelay = 0L,
-            application = app
+            networkDelay = 0L
         )
-        configureFakeRepository(apiService,app)
-        injectTest(app)
+        configureFakeRepository(apiService)
 
-        val scenario = launchFragmentInContainer<ListPostFragment>()
+
+        val scenario = launchFragmentInHiltContainer<ListPostFragment>()
 
         onView(withId(R.id.rcy_post)).check(matches(isDisplayed()))
         onView(withText("Some titles")).check(matches(isDisplayed()))
@@ -81,13 +87,12 @@ class ListPostFragmentTest : BaseMainActivityTests(){
     fun loadItem_empty(){
         val apiService = configureFakeApiService(
             blogsDataSource = Constants.EMPTY_LIST, // empty list
-            networkDelay = 0L,
-            application = app
+            networkDelay = 0L
         )
-        configureFakeRepository(apiService,app)
-        injectTest(app)
+        configureFakeRepository(apiService)
 
-        val scenario = launchFragmentInContainer<ListPostFragment>()
+
+        val scenario = launchFragmentInHiltContainer<ListPostFragment>()
 
         onView(withText("HTTP 204. Returned NOTHING.")).inRoot(ToastMatcher()).check(matches(isDisplayed()))
         onView(withText("Some titles")).check(doesNotExist())
@@ -97,13 +102,11 @@ class ListPostFragmentTest : BaseMainActivityTests(){
     fun loadItem_error(){
         val apiService = configureFakeApiService(
             blogsDataSource = Constants.SERVER_ERROR_FILENAME, // error
-            networkDelay = 0L,
-            application = app
+            networkDelay = 0L
         )
-        configureFakeRepository(apiService,app)
-        injectTest(app)
+        configureFakeRepository(apiService)
 
-        val scenario = launchFragmentInContainer<ListPostFragment>()
+        val scenario = launchFragmentInHiltContainer<ListPostFragment>()
 
         onView(withText("SERVER ERROR")).inRoot(ToastMatcher()).check(matches(isDisplayed()))
         onView(withText("Some titles")).check(doesNotExist())
@@ -115,7 +118,7 @@ class ListPostFragmentTest : BaseMainActivityTests(){
             putParcelable("postArg",Post(1,"path","title"))
         }
 
-        val scenario = launchFragmentInContainer<DetailPostFragment>(bundle,R.style.AppTheme)
+        val scenario = launchFragmentInHiltContainer<DetailPostFragment>(bundle,R.style.AppTheme)
 
         onView(withId(R.id.txt_id)).check(matches(withText("1")))
         onView(withId(R.id.txt_title)).check(matches(withText("title")))
@@ -126,11 +129,10 @@ class ListPostFragmentTest : BaseMainActivityTests(){
 
         val apiService = configureFakeApiService(
             blogsDataSource = Constants.BLOG_POSTS_DATA_FILENAME, // full list of data
-            networkDelay = 0L,
-            application = app
+            networkDelay = 0L
         )
-        configureFakeRepository(apiService,app)
-        injectTest(app)
+        configureFakeRepository(apiService)
+
         val SELECTED_LIST_INDEX=25
 
         val scenario = launchActivity<MainActivity>()
@@ -162,11 +164,10 @@ class ListPostFragmentTest : BaseMainActivityTests(){
     fun navigationTest(){
         val apiService = configureFakeApiService(
             blogsDataSource = Constants.BLOG_POSTS_DATA_FILENAME, // full list of data
-            networkDelay = 0L,
-            application = app
+            networkDelay = 0L
         )
-        configureFakeRepository(apiService,app)
-        injectTest(app)
+        configureFakeRepository(apiService)
+
         val rawJson = jsonUtil.readJSONFromAsset(Constants.BLOG_POSTS_DATA_FILENAME)
         val postResponse = Gson().fromJson<PostResponse>(
             rawJson,
@@ -176,12 +177,12 @@ class ListPostFragmentTest : BaseMainActivityTests(){
         val post=postResponse.items[SELECTED_LIST_INDEX]
 
         // GIVEN - On the home screen
-        val scenario = launchFragmentInContainer<ListPostFragment>()
-        val navController = mock(NavController::class.java)
 
-        scenario.onFragment { fragment ->
-            Navigation.setViewNavController(fragment.requireView(), navController)
+        val navController = mock(NavController::class.java)
+        val scenario = launchFragmentInHiltContainer<ListPostFragment>(){
+            Navigation.setViewNavController(this.requireView(), navController)
         }
+
 
         // WHEN - Click on the first list item
         onView(withId(R.id.rcy_post)).perform(
@@ -201,9 +202,20 @@ class ListPostFragmentTest : BaseMainActivityTests(){
 
 
     }
-
-    override fun injectTest(application: TestBaseApplication) {
-        (application.appComponent as TestAppComponent)
-            .inject(this)
+    fun configureFakeApiService(
+        blogsDataSource: String? = null,
+        networkDelay: Long? = null
+    ): FakeApiService {
+        blogsDataSource?.let { apiService.blogPostsJsonFileName = it }
+        networkDelay?.let { apiService.networkDelay = it }
+        return apiService
     }
+
+    fun configureFakeRepository(
+        apiService: FakeApiService
+    ): FakeMainRepositoryImpl {
+        mainRepository.apiService = apiService
+        return mainRepository
+    }
+
 }

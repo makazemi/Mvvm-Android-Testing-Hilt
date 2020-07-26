@@ -10,9 +10,9 @@ import com.maryam.sample.util.Constants.BLOG_POSTS_DATA_FILENAME
 import com.maryam.sample.util.Constants.SERVER_ERROR_FILENAME
 import kotlinx.coroutines.delay
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
+
+
 class FakeApiService
 @Inject
 constructor(

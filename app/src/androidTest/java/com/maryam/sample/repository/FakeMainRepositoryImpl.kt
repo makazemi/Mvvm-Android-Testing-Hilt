@@ -1,18 +1,18 @@
 package com.maryam.sample.repository
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.liveData
 import com.maryam.sample.api.FakeApiService
 import com.maryam.sample.db.PostDao
 import com.maryam.sample.model.Post
 import com.maryam.sample.model.PostResponse
 import com.maryam.sample.util.*
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import javax.inject.Singleton
+
+
 import kotlin.coroutines.CoroutineContext
 
 
@@ -21,16 +21,12 @@ import kotlin.coroutines.CoroutineContext
  * fake and it's not being injected so I can change it at runtime.
  * That way I can alter the FakeApiService for each individual test.
  */
-@Singleton
-class FakeMainRepositoryImpl @Inject
-constructor() : MainRepository {
 
-    @Inject
-    lateinit var postDao: PostDao
+class FakeMainRepositoryImpl
+ @Inject constructor(private val postDao: PostDao,private val sessionManager: SessionManager) : MainRepository {
+
     lateinit var apiService: FakeApiService
 
-   @Inject
-   lateinit var sessionManager:SessionManager
 
     private fun throwExceptionIfApiServiceNotInitialzied() {
         if (!::apiService.isInitialized) {
@@ -41,9 +37,9 @@ constructor() : MainRepository {
     }
 
     @Throws(UninitializedPropertyAccessException::class)
-    override fun getPostsApiOnly(coroutineContext: CoroutineContext): LiveData<DataState<List<Post>>> =
+    override fun getPostsApiOnly(coroutineContext: CoroutineContext): Flow<DataState<List<Post>>> =
         wrapEspressoIdlingResource{
-        liveData {
+        flow {
             emit(DataState.loading(true))
             val apiResult = safeApiCall(sessionManager.isConnectedToTheInternet(),coroutineContext) {
                 apiService.getPosts()
@@ -66,9 +62,9 @@ constructor() : MainRepository {
 
 
     @Throws(UninitializedPropertyAccessException::class)
-    override fun getPostsCashOnly(coroutineContext: CoroutineContext): LiveData<DataState<List<Post>>> =
+    override fun getPostsCashOnly(coroutineContext: CoroutineContext): Flow<DataState<List<Post>>> =
       //  wrapEspressoIdlingResource {
-            liveData {
+            flow {
                 val apiResult = safeCacheCall(coroutineContext) {
                     postDao.fetchListPost()
                 }
@@ -88,7 +84,7 @@ constructor() : MainRepository {
 
 
     @Throws(UninitializedPropertyAccessException::class)
-    override fun getPostsNetworkBoundResource(coroutineContext: CoroutineContext): LiveData<DataState<List<Post>>> {
+    override fun getPostsNetworkBoundResource(coroutineContext: CoroutineContext): Flow<DataState<List<Post>>> {
        // wrapEspressoIdlingResource {
             return object : NetworkBoundResource<PostResponse, List<Post>, List<Post>>(
                 coroutineContext,

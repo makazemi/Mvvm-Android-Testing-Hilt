@@ -18,7 +18,7 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "com.maryam.sample.MockTestRunner"
-
+        multiDexEnabled true
         // clear state after each individual test
         testInstrumentationRunnerArguments clearPackageData: 'true'
 
@@ -163,6 +163,9 @@ dependencies {
     kaptAndroidTest 'androidx.hilt:hilt-compiler:1.0.0-alpha02'
 
 
+
+    /*multi dex*/
+    implementation 'androidx.multidex:multidex:2.0.1'
 
 }
 kapt {
